@@ -52,8 +52,6 @@ class Juez:
     def especialidad(self) -> str:
         return self._especialidad
 
-
-
 evento1 : Evento = Evento("Juegos Olimpicos", 1, "26-07-2024", "Paris")
 participante1 : Participante = Participante("Juan Perez", "18389678-3", 1, 25, 1001)
 participante2 : Participante = Participante("Pedro González", "17542897-8", 2, 23, 1002)
