@@ -55,14 +55,16 @@ class Juez:
 
 
 evento1 : Evento = Evento("Juegos Olimpicos", 1, "2024-07-26", "Paris")
-participante1 : Participante = Participante("Juan Perez", "12345678-9", 1, 25, 1001)
-participante2 : Participante = Participante("Pedro González", "12564897-8", 2, 23, 1002)
+participante1 : Participante = Participante("Juan Perez", "18389678-9", 1, 25, 1001)
+participante2 : Participante = Participante("Pedro González", "17542897-8", 2, 23, 1002)
+participante3 : Participante = Participante("Fernando Peña", "16224897-8", 3, 24, 1003)
 atleta1 : Atleta = Atleta("100m planos", 9.58)
 entrenador1 : Entrenador = Entrenador("Equipo Nacional")
 juez1 : Juez = Juez("Atletismo")
 print()
 print(f"Participante: {participante1.nombre}, Rut: {participante1.rut}, ID único: {participante1._idparticipante}, Edad: {participante1.edad}, Inscripción Nº: {participante1._numeroinscripcion}\n")
 print(f"Participante: {participante2.nombre}, Rut: {participante2.rut}, ID único: {participante2._idparticipante}, Edad: {participante2.edad}, Inscripción Nº: {participante2._numeroinscripcion}\n")
+print(f"Participante: {participante3.nombre}, Rut: {participante2.rut}, ID único: {participante2._idparticipante}, Edad: {participante2.edad}, Inscripción Nº: {participante2._numeroinscripcion}\n")
 print(f"Evento: {evento1.nombre}, ID único: {evento1._idevento}, Fecha: {evento1._fecha}, Lugar: {evento1._lugar}\n")
 print(f"Atleta: {atleta1.disciplina}, Disciplina: {atleta1.disciplina}, Marca: {atleta1.marca} segundos\n")
 print(f"Entrenador: {entrenador1.equipo}\n")
