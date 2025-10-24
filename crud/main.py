@@ -79,10 +79,14 @@ def create_persona():
         telefono
     )
 
-    if persona_existente(nueva_persona):
-        return print("No se registró a la persona.")
-    else:
-        personas.append(nueva_persona)
+    if persona_existente(nueva_persona: Persona) -> bool:
+        for persona in personas:
+            if persona.rut == nueva_persona.rut:
+                print(f"Persona ya existente con rut: {persona.rut}-{persona.digito_verificador}")
+                return True
+            
+        print("Persona ya existente.")
+        return False
         
 
 def read_persona():
@@ -93,3 +97,6 @@ def update_persona():
 
 def delete_persona():
     pass
+
+create_persona()
+print
