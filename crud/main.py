@@ -73,7 +73,6 @@ def create_persona():
     dia_nacimiento: int = int(input("Ingresa el día de nacimiento de la persona: "))
     mes_nacimiento: int = int(input("Ingresa el mes de nacimiento de la persona: "))    
     anio_nacimiento: int = int(input("Ingresa el año de nacimiento de la persona: "))
-    
     fecha_nacimiento: date = date(
         year=anio_nacimiento,
         month=mes_nacimiento,
@@ -186,7 +185,42 @@ def update_persona(rut:int):
                     
                     
 def delete_persona():
-    pass
+    rut_busqueda = int(input("Ingresa el rut sin digito verificador (Ej: 12345678): ")) 
+    for persona in personas:
+        if rut_busqueda == persona.rut:
+            print(f"Eliminando a persoa con datos : {persona}")
+            personas.remove(persona)
+            print(f"Persona con rut {rut_busqueda} eliminada correctamente.")
+            return
+while True:
+    print(
+        """
+        =============================
+        ||   Gestión de Personas   ||
+        =============================
+        1. Crear Persona
+        2. Leer Personas
+        3. Actualizar Persona
+        4. Eliminar Persona
+        0. Salir
+        """
+    )
+
+    opcion = input("Seleccione una opción [1-4,0]: ")
+    if opcion == "1":
+        create_persona()
+    elif opcion == "2":
+        read_persona()
+    elif opcion == "3":
+        update_persona()
+    elif opcion == "4":
+        delete_persona()
+    elif opcion == "0":
+        print("Saliendo del programa...")
+        break
+    else:
+        print("Opción no válida. Intente nuevamente.")
+        input("Presione Enter para continuar...")
 
 create_persona()
 print
