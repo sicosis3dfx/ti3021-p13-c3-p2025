@@ -15,7 +15,7 @@ def create_schema (query):
         with get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(query)
-                print("Tabla 'personas' creada.")
+                print(f"Tabla creada \n {query}")
     except oracledb.DatabaseError as error:
                 print(f"No se pudo crear la tabla: {error}")
 
@@ -63,11 +63,11 @@ def create_table_personas():
             ),
         ]
 
-        for query in tables:
-            try:
-                with get_connection() as conn:
-                    with conn.cursor() as cursor:
-                cursor.execute(query)
-                print("Tabla 'personas' creada.")
-            except oracledb.DatabaseError as error:
+    for query in tables:
+        try:
+            with get_connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(query)
+                    print("Tabla 'personas' creada.")
+        except oracledb.DatabaseError as error:
                 print(f"No se pudo crear la tabla: {error}")
