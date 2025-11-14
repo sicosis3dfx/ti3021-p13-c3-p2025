@@ -30,3 +30,51 @@ def create_table_personas():
             print("Tabla 'personas' creada.")
     except oracledb.DatabaseError as error:
         print(f"No se pudo crear la tabla: {error}")
+
+        [
+            -- 1. Tabla Evento
+            CREATE TABLE Evento (
+                idevento INTEGER PRIMARY KEY,
+                nombre VARCHAR(50) NOT NULL,
+                fecha DATE,
+                lugar TEXT
+            );
+
+            -- 2. Tabla Participante
+            CREATE TABLE Participante (
+                idparticipante INTEGER PRIMARY KEY,
+                nombre VARCHAR(50) NOT NULL,
+                rut VARCHAR(10) UNIQUE,
+                edad INTEGER,
+                numeroinscripcion INTEGER
+            );
+
+            -- 3. Tabla Atleta (Herencia de Participante)
+            CREATE TABLE Atleta (
+                idparticipante INTEGER PRIMARY KEY,
+                disciplina TEXT,
+                marca NUMERIC,
+                FOREIGN KEY (idparticipante) REFERENCES Participante(idparticipante)
+            );
+
+            -- 4. Tabla Entrenador
+            CREATE TABLE Entrenador (
+                identrenador INTEGER PRIMARY KEY,
+                equipo TEXT
+            );
+
+            -- 5. Tabla Juez
+            CREATE TABLE Juez (
+                idjuez INTEGER PRIMARY KEY,
+                especialidad TEXT
+            );
+
+            -- Tabla de Relación (Inscripción/Participación)
+            CREATE TABLE Inscripcion (
+                idevento INTEGER,
+                idparticipante INTEGER,
+                PRIMARY KEY (idevento, idparticipante),
+                FOREIGN KEY (idevento) REFERENCES Evento(idevento),
+                FOREIGN KEY (idparticipante) REFERENCES Participante(idparticipante)
+            );
+            ]
