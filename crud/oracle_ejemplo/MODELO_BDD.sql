@@ -28,7 +28,7 @@
 
             CREATE TABLE Juez (
                 idjuez INTEGER PRIMARY KEY,
-                especialidad (50)
+                especialidad VARCHAR (50)
             )
 
             CREATE TABLE Inscripcion (

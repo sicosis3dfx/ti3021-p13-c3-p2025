@@ -51,7 +51,7 @@ def create_table_personas():
             (
                 "CREATE TABLE Juez ("
                 "idjuez INTEGER PRIMARY KEY,"
-                "especialidad (50)"
+                "especialidad VARCHAR(50)"
             ),
             (
                 "CREATE TABLE Inscripcion ("
@@ -61,13 +61,92 @@ def create_table_personas():
                 "FOREIGN KEY (idevento) REFERENCES Evento(idevento),"
                 "FOREIGN KEY (idparticipante) REFERENCES Participante(idparticipante)"
             ),
-        ]
-
+    ]
     for query in tables:
-        try:
-            with get_connection() as conn:
-                with conn.cursor() as cursor:
-                    cursor.execute(query)
-                    print("Tabla 'personas' creada.")
-        except oracledb.DatabaseError as error:
-                print(f"No se pudo crear la tabla: {error}")
+            create_schema(query)
+from datetime import datetime
+def create_evento(
+    id,
+    nombre,
+    fecha,
+    lugar
+):
+    sql = (
+        "INSERT INTO Evento (idevento, nombre, fecha, lugar) "
+        "VALUES (:id, :nombre, :fecha, :lugar)"
+    )
+    
+    parametros = {
+        "id": id,
+        "nombre": nombre,
+        "fecha": datetime.strptime(fecha, '%d-%m-%Y'),
+        "lugar": lugar
+        
+    }   
+
+def create_participante(
+    id,
+    nombre,
+    rut,
+    edad,
+    numeroinscripcion
+):
+    sql = (
+        "INSERT INTO Participante (idparticipante, nombre, rut, edad, numeroinscripcion) "
+        "VALUES (:id, :nombre, :rut, :edad, :numeroinscripcion)"
+    )   
+    
+    parametros = {
+        "id": id,
+        "nombre": nombre,
+        "rut": rut,
+        "edad": edad,
+        "numeroinscripcion": numeroinscripcion
+    }
+    
+def create_atleta(
+    idparticipante,
+    disciplina,
+    marca
+):
+    sql = (
+        "INSERT INTO Atleta (idparticipante, disciplina, marca) "
+        "VALUES (:idparticipante, :disciplina, :marca)"
+    )
+    
+    parametros = {
+        "idparticipante": idparticipante,
+        "disciplina": disciplina,
+        "marca": marca
+    }
+
+    
+def create_entrenador(
+    identrenador,
+    equipo
+):
+    sql = (
+        "INSERT INTO Entrenador (identrenador, equipo) "
+        "VALUES (:identrenador, :equipo)"
+    )   
+
+    parametros = {  
+        "identrenador": identrenador,
+        "equipo": equipo
+    }
+
+    
+def create_juez(
+    idjuez,
+    especialidad
+):
+    sql = (
+        "INSERT INTO Juez (idjuez, especialidad) "
+        "VALUES (:idjuez, :especialidad)"
+    )
+    
+    parametros = {
+        "idjuez": idjuez,
+        "especialidad": especialidad
+    }
+    
