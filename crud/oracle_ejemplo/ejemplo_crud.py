@@ -256,7 +256,29 @@ def read_atletas():
                 print(f"No se pudo leer los datos \n {error} \n {sql}")
 
 def read_entrenadores():
-    pass
+    sql = (
+    "SELECT * FROM Entrenadores"
+    )
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                print(sql)
+                resultado = cursor.execute(sql)
+                for fila in resultado:
+                    print(fila)
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo leer los datos \n {error} \n {sql}")
 
 def read_jueces():
-    pass
+    sql = (
+    "SELECT * FROM Jueces"
+    )
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                print(sql)
+                resultado = cursor.execute(sql)
+                for fila in resultado:
+                    print(fila)
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo leer los datos \n {error} \n {sql}")
