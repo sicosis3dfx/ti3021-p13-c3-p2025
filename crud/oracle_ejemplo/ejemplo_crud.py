@@ -22,14 +22,14 @@ def create_schema (query):
 def create_table_personas():
     tables = [
             (
-                "CREATE TABLE Evento ("
+                "CREATE TABLE Eventos ("
                 "idevento INTEGER PRIMARY KEY,"
                 "nombre VARCHAR(50) NOT NULL,"
                 "fecha DATE,"
                 "lugar VARCHAR(50)"
             ),
             (
-                "CREATE TABLE Participante ("
+                "CREATE TABLE Participantes ("
                 "idparticipante INTEGER PRIMARY KEY,"
                 "nombre VARCHAR(50) NOT NULL,"
                 "rut VARCHAR(10) UNIQUE,"
@@ -37,19 +37,19 @@ def create_table_personas():
                 "numeroinscripcion INTEGER"
             ),
             (
-                "CREATE TABLE Atleta ("
+                "CREATE TABLE Atletas ("
                 "idparticipante INTEGER PRIMARY KEY,"
                 "disciplina TEXT,"
-                "marca NUMERIC,"
+                "marca FLOAT,"
                 "FOREIGN KEY (idparticipante) REFERENCES Participante(idparticipante)"
             ),
             (
-                "CREATE TABLE Entrenador ("
+                "CREATE TABLE Entrenadores ("
                 "identrenador INTEGER PRIMARY KEY,"
                 "equipo VARCHAR(50)"
             ),
             (
-                "CREATE TABLE Juez ("
+                "CREATE TABLE Jueces ("
                 "idjuez INTEGER PRIMARY KEY,"
                 "especialidad VARCHAR(50)"
             ),
@@ -65,15 +65,15 @@ def create_table_personas():
     for query in tables:
             create_schema(query)
 from datetime import datetime
-def create_evento(
-    id,
-    nombre,
-    fecha,
-    lugar
+def create_eventos(
+    id: int,
+    nombre: str,
+    fecha: str,
+    lugar: str,
 ):
     sql = (
-        "INSERT INTO Evento (idevento, nombre, fecha, lugar) "
-        "VALUES (:id, :nombre, :fecha, :lugar)"
+        "INSERT INTO Eventos (idevento, nombre, fecha, lugar) "
+        "VALUES (:id, :nombre, :fecha, :lugar)" 
     )
     
     parametros = {
@@ -83,16 +83,25 @@ def create_evento(
         "lugar": lugar
         
     }   
+    
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(sql, parametros)
+                connection.commit()
+                print("Inserción de datos exitosa.")
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo insertar el dato \n {error} \n {sql} \n {parametros}")
 
-def create_participante(
-    id,
-    nombre,
-    rut,
-    edad,
-    numeroinscripcion
+def create_participantes(
+    id: int,
+    nombre: str,
+    rut: str,
+    edad: int,
+    numeroinscripcion: int,
 ):
     sql = (
-        "INSERT INTO Participante (idparticipante, nombre, rut, edad, numeroinscripcion) "
+        "INSERT INTO Participantes (idparticipante, nombre, rut, edad, numeroinscripcion) "
         "VALUES (:id, :nombre, :rut, :edad, :numeroinscripcion)"
     )   
     
@@ -104,10 +113,19 @@ def create_participante(
         "numeroinscripcion": numeroinscripcion
     }
     
-def create_atleta(
-    idparticipante,
-    disciplina,
-    marca
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(sql, parametros)
+                connection.commit()
+                print("Inserción de datos exitosa.")
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo insertar el dato \n {error} \n {sql} \n {parametros}")
+
+def create_atletas(
+    idparticipante: int,
+    disciplina: str,
+    marca: float,
 ):
     sql = (
         "INSERT INTO Atleta (idparticipante, disciplina, marca) "
@@ -120,13 +138,21 @@ def create_atleta(
         "marca": marca
     }
 
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(sql, parametros)
+                connection.commit()
+                print("Inserción de datos exitosa.")
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo insertar el dato \n {error} \n {sql} \n {parametros}")
     
-def create_entrenador(
-    identrenador,
-    equipo
+def create_entrenadores(
+    identrenador: int,
+    equipo: str,
 ):
     sql = (
-        "INSERT INTO Entrenador (identrenador, equipo) "
+        "INSERT INTO Entrenadores (identrenador, equipo) "
         "VALUES (:identrenador, :equipo)"
     )   
 
@@ -135,13 +161,21 @@ def create_entrenador(
         "equipo": equipo
     }
 
-    
-def create_juez(
-    idjuez,
-    especialidad
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(sql, parametros)
+                connection.commit()
+                print("Inserción de datos exitosa.")
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo insertar el dato \n {error} \n {sql} \n {parametros}")
+
+def create_jueces(
+    idjuez: int,
+    especialidad: str,
 ):
     sql = (
-        "INSERT INTO Juez (idjuez, especialidad) "
+        "INSERT INTO Jueces (idjuez, especialidad) "
         "VALUES (:idjuez, :especialidad)"
     )
     
@@ -149,4 +183,80 @@ def create_juez(
         "idjuez": idjuez,
         "especialidad": especialidad
     }
-    
+
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(sql, parametros)
+                connection.commit()
+                print("Inserción de datos exitosa.")
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo insertar el dato \n {error} \n {sql} \n {parametros}")
+
+def read_eventos():
+    sql = (
+    "SELECT * FROM Eventos"
+    )
+
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                print(sql)
+                resultado = cursor.execute(sql)
+                for fila in resultado:
+                    print(fila)
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo leer los datos \n {error} \n {sql}")
+
+def read_participantes():
+    sql = (
+    "SELECT * FROM Participantes"
+    )
+
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                print(sql)
+                resultado = cursor.execute(sql)
+                for fila in resultado:
+                    print(fila)
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo leer los datos \n {error} \n {sql}")
+
+def read_participante_by_id(id: int):
+    sql = (
+    "SELECT * FROM Participantes WHERE idparticipante = :id"
+    )
+    parametros = {"id": id}
+
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                print(sql, parametros)
+                resultado = cursor.execute(sql, parametros)
+                if len(resultado) == 0:
+                    return print(f"No hay registros con el ID {id}")
+                for fila in resultado:
+                    print(fila)
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo leer el dato \n {error} \n {sql} \n {parametros}")
+
+def read_atletas():
+    sql = (
+    "SELECT * FROM Atletas"
+    )
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cursor:
+                print(sql)
+                resultado = cursor.execute(sql)
+                for fila in resultado:
+                    print(fila)
+    except oracledb.DatabaseError as error:
+                print(f"No se pudo leer los datos \n {error} \n {sql}")
+
+def read_entrenadores():
+    pass
+
+def read_jueces():
+    pass
