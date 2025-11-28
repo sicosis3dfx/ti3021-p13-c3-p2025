@@ -1,12 +1,12 @@
 
-            CREATE TABLE Evento (
+            CREATE TABLE Eventos (
                 idevento INTEGER PRIMARY KEY,
                 nombre VARCHAR(50) NOT NULL,
                 fecha DATE,
                 lugar VARCHAR(50)
             )
 
-            CREATE TABLE Participante (
+            CREATE TABLE Participantes (
                 idparticipante INTEGER PRIMARY KEY,
                 nombre VARCHAR(50) NOT NULL,
                 rut VARCHAR(10) UNIQUE,
@@ -14,24 +14,24 @@
                 numeroinscripcion INTEGER
             )
 
-            CREATE TABLE Atleta (
+            CREATE TABLE Atletas (
                 idparticipante INTEGER PRIMARY KEY,
                 disciplina TEXT,
                 marca NUMERIC,
                 FOREIGN KEY (idparticipante) REFERENCES Participante(idparticipante)
             )
 
-            CREATE TABLE Entrenador (
+            CREATE TABLE Entrenadores (
                 identrenador INTEGER PRIMARY KEY,
                 equipo VARCHAR(50)
             )
 
-            CREATE TABLE Juez (
+            CREATE TABLE Jueces (
                 idjuez INTEGER PRIMARY KEY,
                 especialidad VARCHAR (50)
             )
 
-            CREATE TABLE Inscripcion (
+            CREATE TABLE Inscripciones (
                 idevento INTEGER,
                 idparticipante INTEGER,
                 PRIMARY KEY (idevento, idparticipante),
