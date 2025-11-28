@@ -405,7 +405,7 @@ def delete_evento(id: int):
     except oracledb.DatabaseError as error:
                 print(f"No se pudo eliminar el dato \n {error} \n {sql} \n {parametros}")
 
-def delete_participante(id: int):
+def delete_participantes(id: int):
     sql = (
         "DELETE FROM Participantes WHERE idparticipante = :id"
     )
@@ -465,8 +465,183 @@ def delete_juez(idjuez: int):
     except oracledb.DatabaseError as error:
                 print(f"No se pudo eliminar el dato \n {error} \n {sql} \n {parametros}")
 
+
+
+def menu_personas():
+    while True:
+        os.system("cls")
+        print(
+            """
+                ====================================
+                |         Menu: Participantes      |
+                |----------------------------------|
+                | 1. Insertar un dato              |
+                | 2. Consultar todos los datos     |
+                | 3. Consultar dato por ID         |
+                | 4. Modificar un dato             |
+                | 5. Eliminar un dato              |
+                | 0. Volver al menu principal      |
+                ====================================
+            """
+        )
+        opcion = input("Elige una opción [1-5, 0]: ")
+        if opcion == "1":
+            os.system("cls")
+            print("1. Insertar un dato")
+            id = input("Ingrese id de la persona: ")
+            nombre = input("Ingrese rut de la persona: ")
+            rut = input("Ingrese nombres de la persona: ")
+            edad = input("Ingrese apellidos de la persona: ")
+            numeroinscripcion =
+            create_participantes(id, nombre, rut, edad, numeroinscripcion)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "2":
+            os.system("cls")
+            print("2. Consultar todos los datos")
+            read_participantes()
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "3":
+            os.system("cls")
+            print("3. Consultar dato por ID ")
+            id = input("Ingrese id de la persona: ")
+            read_participante_by_id(id)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "4":
+            os.system("cls")
+            print("4. Modificar un dato")
+            id = input("Ingrese id de la persona: ")
+            print("[Sólo ingrese los datos a modificar de la persona]")
+            nombre = input("Ingrese el nombre de la persona (opcional): ")
+            rut = input("Ingrese rut de la persona (opcional): ")
+            edad = input("Ingrese edad de la persona (opcional): ")  
+            if len(rut.strip()) == 0: rut = None
+            if len(nombres.strip()) == 0: nombres = None
+            if len(apellidos.strip()) == 0: apellidos = None
+            if len(fecha_nacimiento.strip()) == 0: fecha_nacimiento = None
+            update_participante(id, nombre, rut, edad)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "5":
+            os.system("cls")
+            print("5. Eliminar un dato")
+            id = input("Ingrese id de la persona: ")
+            delete_participantes(id)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "0":
+            os.system("cls")
+            print("Volviendo al menú principal...")
+            break
+        else:
+            os.system("cls")
+            print("Opción incorrecta, intente nuevamente.")
+            input("Ingrese ENTER para continuar...")
+
+def menu_eventos():
+    while True:
+        os.system("cls")
+        print(
+            """
+                ====================================
+                |         Menu: Eventos            |
+                |----------------------------------|
+                | 1. Insertar un dato              |
+                | 2. Consultar todos los datos     |
+                | 3. Consultar dato por ID         |
+                | 4. Modificar un dato             |
+                | 5. Eliminar un dato              |
+                | 0. Volver al menu principal      |
+                ====================================
+            """
+        )
+        opcion = input("Elige una opción [1-5, 0]: ")
+        if opcion == "1":
+            os.system("cls")
+            print("1. Insertar un dato")
+            id = input("Ingrese id de la persona: ")
+            nombre = input("Ingrese rut de la persona: ")
+            rut = input("Ingrese nombres de la persona: ")
+            edad = input("Ingrese apellidos de la persona: ")
+            numeroinscripcion = input("Ingrese fecha de nacimiento de la persona: ")
+            create_participantes(id, nombre, rut, edad, numeroinscripcion)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "2":
+            os.system("cls")
+            print("2. Consultar todos los datos")
+            read_participantes()
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "3":
+            os.system("cls")
+            print("3. Consultar dato por ID ")
+            id = input("Ingrese id de la persona: ")
+            read_participante_by_id(id)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "4":
+            os.system("cls")
+            print("4. Modificar un dato")
+            id = input("Ingrese id de la persona: ")
+            print("[Sólo ingrese los datos a modificar de la persona]")
+            nombre = input("Ingrese el nombre de la persona (opcional): ")
+            rut = input("Ingrese rut de la persona (opcional): ")
+            edad = input("Ingrese edad de la persona (opcional): ")  
+            if len(rut.strip()) == 0: rut = None
+            if len(nombres.strip()) == 0: nombres = None
+            if len(apellidos.strip()) == 0: apellidos = None
+            if len(fecha_nacimiento.strip()) == 0: fecha_nacimiento = None
+            update_participante(id, nombre, rut, edad)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "5":
+            os.system("cls")
+            print("5. Eliminar un dato")
+            id = input("Ingrese id de la persona: ")
+            delete_participantes(id)
+            input("Ingrese ENTER para continuar...")
+        elif opcion == "0":
+            os.system("cls")
+            print("Volviendo al menú principal...")
+            break
+        else:
+            os.system("cls")
+            print("Opción incorrecta, intente nuevamente.")
+            input("Ingrese ENTER para continuar...")
+
+
 def main():
-    pass
+    while True:
+        os.system("cls")
+        print(
+            """
+                ====================================
+                |     CRUD: Oracle + Python        |
+                |----------------------------------|
+                | 1. Crear todas las tablas        |
+                | 2. Gestionar tabla Personas      |
+                | 3. Gestionar tabla Departamentos |
+                | 4. Gestionar tabla Empleado*     |
+                | 0. Salir del sistema             |
+                |----------------------------------|
+                | * La tabla empleado necesita al  |
+                | menos un registro creado en la   |
+                | tabla Personas y Departamentos.  |
+                ====================================
+            """
+        )
+        opcion = input("Elige una opción [1-4, 0]: ")
+
+        if opcion == "1":
+            os.system("cls")
+            create_all_tables()
+        elif opcion == "2":
+            menu_personas()
+        elif opcion == "3":
+            pass
+        elif opcion == "4":
+            pass
+        elif opcion == "0":
+            pass
+        else:
+            os.system("cls")
+            print("Opción incorrecta, intente nuevamente.")
+            input("Ingrese ENTER para continuar...")
+
 
 if __name__ == "__main__":
     main()
