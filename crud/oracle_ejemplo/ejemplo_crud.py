@@ -482,6 +482,7 @@ def menu_eventos():
         opcion = input("Elige una opción: ")
         
         if opcion == "1":
+            os.system("cls")
             print("\n--- Crear Evento ---")
             try:
                 id = int(input("ID Evento: "))
@@ -494,10 +495,12 @@ def menu_eventos():
             input("ENTER para continuar...")
 
         elif opcion == "2":
+            os.system("cls")
             read_eventos()
             input("ENTER para continuar...")
 
         elif opcion == "3":
+            os.system("cls")
             print("\n--- Modificar Evento ---")
             id = input("ID del evento a modificar: ")
             print("[Deje en blanco si no desea modificar el campo]")
@@ -505,15 +508,15 @@ def menu_eventos():
             fecha = input("Nueva fecha (DD-MM-YYYY): ")
             lugar = input("Nuevo lugar: ")
 
-            # Limpieza de datos vacíos
-            nombre = nombre if len(nombre.strip()) == 0 else None
-            fecha = fecha if len(fecha.strip()) == 0 else None
-            lugar = lugar if len(lugar.strip()) == 0 else None
+            nombre = nombre if len(nombre.strip()) > 0 else None
+            fecha = fecha if len(fecha.strip()) > 0 else None
+            lugar = lugar if len(lugar.strip()) > 0 else None
 
             update_evento(id, nombre, fecha, lugar)
             input("ENTER para continuar...")
 
         elif opcion == "4":
+            os.system("cls")
             id = input("ID a eliminar: ")
             delete_evento(id)
             input("ENTER para continuar...")
@@ -543,6 +546,7 @@ def menu_participantes():
         opcion = input("Elige una opción: ")
 
         if opcion == "1":
+            os.system("cls")
             print("\n--- Crear Participante ---")
             try:
                 id = int(input("ID Participante: "))
@@ -556,15 +560,18 @@ def menu_participantes():
             input("ENTER para continuar...")
 
         elif opcion == "2":
+            os.system("cls")
             read_participantes()
             input("ENTER para continuar...")
 
         elif opcion == "3":
+            os.system("cls")
             id = input("ID a buscar: ")
             read_participante_by_id(id)
             input("ENTER para continuar...")
 
         elif opcion == "4":
+            os.system("cls")
             print("\n--- Modificar Participante ---")
             id = input("ID del participante a modificar: ")
             print("[Deje en blanco si no desea modificar el campo]")
@@ -573,15 +580,15 @@ def menu_participantes():
             rut = input("Nuevo RUT: ")
             edad_str = input("Nueva Edad: ")
             
-            # Limpieza y conversión
-            nombre = nombre if len(nombre.strip()) == 0 else None
-            rut = rut if len(rut.strip()) == 0 else None
-            edad = int(edad_str) if len(edad_str.strip()) == 0 else None
+            nombre = nombre if len(nombre.strip()) > 0 else None
+            rut = rut if len(rut.strip()) > 0 else None
+            edad = int(edad_str) if len(edad_str.strip()) > 0 else None
 
             update_participante(id, nombre, rut, edad)
             input("ENTER para continuar...")
 
         elif opcion == "5":
+            os.system("cls")
             id = input("ID a eliminar: ")
             delete_participantes(id)
             input("ENTER para continuar...")
@@ -610,6 +617,7 @@ def menu_atletas():
         opcion = input("Elige una opción: ")
 
         if opcion == "1":
+            os.system("cls")
             print("\n--- Crear Atleta ---")
             try:
                 id = int(input("ID del Participante (ya existente): "))
@@ -621,10 +629,12 @@ def menu_atletas():
             input("ENTER para continuar...")
 
         elif opcion == "2":
+            os.system("cls")
             read_atletas()
             input("ENTER para continuar...")
 
         elif opcion == "3":
+            os.system("cls")
             print("\n--- Modificar Atleta ---")
             id = input("ID del Participante/Atleta a modificar: ")
             print("[Deje en blanco si no desea modificar el campo]")
@@ -632,13 +642,14 @@ def menu_atletas():
             disciplina = input("Nueva Disciplina: ")
             marca_str = input("Nueva Marca: ")
             
-            disciplina = disciplina if len(disciplina.strip()) == 0 else None
-            marca = float(marca_str) if len(marca_str.strip()) == 0 else None
+            disciplina = disciplina if len(disciplina.strip()) > 0 else None
+            marca = float(marca_str) if len(marca_str.strip()) > 0 else None
 
             update_atleta(id, disciplina, marca)
             input("ENTER para continuar...")
 
         elif opcion == "4":
+            os.system("cls")
             id = input("ID del Atleta a eliminar: ")
             delete_atleta(id)
             input("ENTER para continuar...")
@@ -667,6 +678,7 @@ def menu_entrenadores():
         opcion = input("Elige una opción: ")
 
         if opcion == "1":
+            os.system("cls")
             print("\n--- Crear Entrenador ---")
             try:
                 id = int(input("ID Entrenador: "))
@@ -677,21 +689,24 @@ def menu_entrenadores():
             input("ENTER para continuar...")
 
         elif opcion == "2":
+            os.system("cls")
             read_entrenadores()
             input("ENTER para continuar...")
 
         elif opcion == "3":
+            os.system("cls")
             print("\n--- Modificar Entrenador ---")
             id = input("ID del Entrenador a modificar: ")
             print("[Deje en blanco si no desea modificar el campo]")
             
             equipo = input("Nuevo Equipo: ")
-            equipo = equipo if len(equipo.strip()) == 0 else None
+            equipo = equipo if len(equipo.strip()) > 0 else None
 
             update_entrenador(id, equipo)
             input("ENTER para continuar...")
 
         elif opcion == "4":
+            os.system("cls")
             id = input("ID del Entrenador a eliminar: ")
             delete_entrenador(id)
             input("ENTER para continuar...")
@@ -720,6 +735,7 @@ def menu_jueces():
         opcion = input("Elige una opción: ")
 
         if opcion == "1":
+            os.system("cls")
             print("\n--- Crear Juez ---")
             try:
                 id = int(input("ID Juez: "))
@@ -730,21 +746,24 @@ def menu_jueces():
             input("ENTER para continuar...")
 
         elif opcion == "2":
+            os.system("cls")
             read_jueces()
             input("ENTER para continuar...")
 
         elif opcion == "3":
+            os.system("cls")
             print("\n--- Modificar Juez ---")
             id = input("ID del Juez a modificar: ")
             print("[Deje en blanco si no desea modificar el campo]")
             
             especialidad = input("Nueva Especialidad: ")
-            especialidad = especialidad if len(especialidad.strip()) == 0 else None
+            especialidad = especialidad if len(especialidad.strip()) > 0 else None
 
             update_juez(id, especialidad)
             input("ENTER para continuar...")
 
         elif opcion == "4":
+            os.system("cls")
             id = input("ID del Juez a eliminar: ")
             delete_juez(id)
             input("ENTER para continuar...")
@@ -775,17 +794,23 @@ def main():
         opcion = input("Elige una opción: ")
 
         if opcion == "1":
+            os.system("cls")
             create_all_tables()
             input("Tablas verificadas. ENTER para continuar...")
         elif opcion == "2":
+            os.system("cls")
             menu_eventos()
         elif opcion == "3":
+            os.system("cls")
             menu_participantes()
         elif opcion == "4":
+            os.system("cls")
             menu_atletas()
         elif opcion == "5":
+            os.system("cls")
             menu_entrenadores()
         elif opcion == "6":
+            os.system("cls")
             menu_jueces()
         elif opcion == "0":
             print("Saliendo...")
