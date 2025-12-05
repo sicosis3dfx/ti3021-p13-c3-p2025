@@ -17,3 +17,9 @@ with oracledb.connect(
         for row in cursor.execute(sql):
             for column in row:
                 print(column)
+
+""" CREDENCIALES
+ORACLE_USER="C##ANGELO_ZAMORA"
+ORACLE_DSN="10.50.1.0/xe"
+ORACLE_PASSWORD="Inacap#2025" 
+"""
