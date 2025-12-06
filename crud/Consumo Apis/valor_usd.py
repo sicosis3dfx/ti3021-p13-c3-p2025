@@ -3,7 +3,7 @@ import requests
 base_url = "https://cl.dolarapi.com"
 # [Protocolo de la API]-----↑
 
-# Ruto o Endpoint que me dice el precio del dolar según CLP
+# Ruta o Endpoint que me dice el precio del dolar según CLP
 endpoint_dolar = "/v1/cotizaciones/usd"
 
 # Juntamos la URL y el Endpoint para hacer la petición de tipo GET
