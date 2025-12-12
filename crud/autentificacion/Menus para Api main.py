@@ -1,3 +1,68 @@
+# Menú sin login
+def menu_indicadores(finance_app):
+    while True:
+        os.system("cls" if os.name == 'nt' else 'clear')
+        
+        print(
+            """
+            ====================================
+            |          Menu: Opciones          |
+            |----------------------------------|
+            | 1. Consultar UF                  |
+            | 2. Consultar Dólar (USD)         |
+            | 3. Consultar Euro                |
+            | 4. Consultar UTM (Mensual)       |
+            | 5. Consultar IPC (Mensual)       |
+            | 6. Consultar IVP                 |
+            | 0. Salir                         |
+            ====================================
+            """
+        )
+        opcion = input("Elige una opción: ")
+
+        if opcion == "1":
+            print("\n--- Valor $ Unidad de Fomento ---")
+            finance_app.get_uf()
+            input("\nPresione ENTER para continuar...")
+        
+        elif opcion == "2":
+            print("\n--- Valor $ Dólar -> a Peso Chileno (CLP) ---")
+            finance_app.get_usd()
+            input("\nPresione ENTER para continuar...")
+
+        elif opcion == "3":
+            print("\n--- Valor $ Euro -> a Peso Chileno (CLP) ---")
+            finance_app.get_eur()
+            input("\nPresione ENTER para continuar...")
+
+        elif opcion == "4":
+            print("\n--- Valor $ Unidad Tributaria Mensual ---")
+            finance_app.get_utm()
+            input("\nPresione ENTER para continuar...")
+
+        elif opcion == "5":
+            print("\n--- Valor % Índice de Precio al Consumidor ---")
+            finance_app.get_ipc()
+            input("\nPresione ENTER para continuar...")
+
+        elif opcion == "6":
+            print("\n--- Valor $ Índice de valor Promedio ---")
+            finance_app.get_ivp()
+            input("\nPresione ENTER para continuar...")
+
+        elif opcion == "0":
+            print("\nSaliendo del programa...")
+            break
+        else:
+            input("\nOpción inválida. Presione ENTER para intentar de nuevo.")
+
+if __name__ == "__main__":
+    # Instanciamos la clase de finanzas
+    app = Finance() 
+    # Llamamos al menú de manera directa
+    menu_indicadores(app)
+
+# Menú solo mediante Login
 def menu_indicadores(finance_app):
     """Menú secundario: Solo accesible tras login"""
     while True:
