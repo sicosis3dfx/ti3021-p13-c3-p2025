@@ -143,18 +143,19 @@ def menu_indicadores(finance_app):
         
         print(
             """
-            ╔════════════════════════════════════════╗
-            ║            MENU DE OPCIONES            ║
-            ╠════════════════════════════════════════╣
-            ║  1. Consultar UF                       ║
-            ║  2. Consultar Dólar (USD)              ║
-            ║  3. Consultar Euro                     ║
-            ║  4. Consultar UTM (Mensual)            ║
-            ║  5. Consultar IPC (Mensual)            ║
-            ║  6. Consultar IVP                      ║
-            ║────────────────────────────────────────║
-            ║  0. Salir                              ║
-            ╚════════════════════════════════════════╝
+            █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+            █             MENU FINANCIERO           █
+            █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
+            █                                       █
+            █  [1] >> Consultar UF                  █
+            █  [2] >> Consultar Dólar (USD)         █
+            █  [3] >> Consultar Euro                █
+            █  [4] >> Consultar UTM (Mensual)       █
+            █  [5] >> Consultar IPC (Mensual)       █
+            █  [6] >> Consultar IVP                 █
+            █                                       █
+            █  [0] >> SALIR                         █
+            █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
             """
         )
         opcion = input("Elige una opción: ")
