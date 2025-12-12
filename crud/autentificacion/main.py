@@ -124,7 +124,7 @@ if __name__ == "__main__":
     indicadores.get_ipc()
     indicadores.get_utm()
     indicadores.get_usd()
-    indicadores.get_ipc()
+    indicadores.get_eur()
 
 """
 # Conectarnos a la base de datos
