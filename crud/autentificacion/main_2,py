@@ -131,7 +131,6 @@ if __name__ == "__main__":
         dsn=os.getenv("ORACLE_DSN"),
         password=os.getenv("ORACLE_PASSWORD")
     )
-    db.create_all_tables()  
+    indicadores = Finance()
     
-    Auth.login(db, "soyelangelo", "asdasd")
     
