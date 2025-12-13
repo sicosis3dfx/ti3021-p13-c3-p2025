@@ -6,22 +6,23 @@ from dotenv import load_dotenv
 from typing import Optional
 import datetime
 
-# Cargo las credenciales desde el archivo .env
+# Cargo las credenciales del archivo .env para que no se vean en el código
 load_dotenv()
 
 class Database:
     def __init__(self, username, dsn, password):
-        # Guardo los datos de conexión
+        # Constructor: Aquí recibo los datos para conectarme a Oracle
         self.username = username
         self.dsn = dsn
         self.password = password
 
     def get_connection(self):
-        # Creo la conexión real usando la librería
+        # Esta función es la que hace la conexión real usando la librería oracledb
         return oracledb.connect(user=self.username, password=self.password, dsn=self.dsn)  
 
     def create_all_tables(self):
-        # Defino las sentencias SQL para crear las tablas necesarias
+        # Aquí defino las tablas que pide la evaluación.
+        # Le puse HISTORIAL_FINANCIERO para que se cree limpia con todas las columnas nuevas.
         tables = [
             (
                 "CREATE TABLE USERS ("
@@ -30,52 +31,54 @@ class Database:
                 "password VARCHAR2(128)"
                 ")"
             ),
-            # Tabla para cumplir con el requisito de Historial
+            # Esta es la tabla para guardar las consultas.
+            # Agregué el campo 'origen' porque la pauta pide registrar el sitio proveedor.
             (
-                "CREATE TABLE HISTORIAL ("
+                "CREATE TABLE HISTORIAL_FINANCIERO ("
                 "id INTEGER PRIMARY KEY, "
                 "indicador VARCHAR2(20), "
                 "valor NUMBER(10, 2), "
                 "fecha_dato VARCHAR2(20), "
                 "fecha_consulta DATE DEFAULT SYSDATE, "
-                "usuario VARCHAR2(32)"
+                "usuario VARCHAR2(32), "
+                "origen VARCHAR2(50)" 
                 ")"
             )
         ]
-        # Recorro la lista y ejecuto la creación.
-        # OJO: Aquí ya no uso try-except para que si hay un error real, se muestre en query.
+        # Recorro la lista y mando a crear cada tabla una por una
         for table in tables:
             self.query(table)
 
     def query(self, sql: str, parameters: Optional[dict] = None):
             try:
-                # Uso 'with' para asegurar que la conexión se cierre bien
+                # Uso 'with' para que la conexión se cierre sola si pasa algo
                 with self.get_connection() as connection:
                     with connection.cursor() as cursor:
                         ejecucion = cursor.execute(sql, parameters)
                         
-                        # Si es una consulta de lectura (SELECT), devuelvo los datos
+                        # Si la consulta empieza con SELECT, tengo que devolver una lista con los datos
                         if sql.strip().upper().startswith("SELECT"):
                             resultado = []
                             for fila in ejecucion:
                                 resultado.append(fila)
                             return resultado 
                         
-                        # Si es escritura (INSERT, CREATE), guardo los cambios
+                        # Si es un INSERT o CREATE, guardo los cambios con commit
                         connection.commit()
                         return True 
             except oracledb.DatabaseError as error:
-                # Si el error es 955, es porque la tabla ya existe. 
-                # Ese error lo oculto para que no se vea feo al iniciar.
+                # Si me sale el error 955 es porque la tabla ya existe.
+                # Lo filtro para que no me llene la consola de errores rojos al iniciar.
                 if "ORA-00955" in str(error):
                     return False 
                 
-                # Cualquier otro error (permisos, sintaxis) SÍ lo muestro
+                # Si es otro error (como credenciales o permisos), que me avise
                 print(f"Error BD: {error}")
                 return False
  
     def get_next_id(self, table_name):
-        # Truco para calcular el ID manual y evitar error ORA-01400 (NULL ID)
+        # Tuve problemas con el autoincrementable (error ORA-01400), así que hice esta función
+        # para buscar el último ID y sumarle 1 manualmente.
         try:
             res = self.query(f"SELECT NVL(MAX(id), 0) + 1 FROM {table_name}")
             return res[0][0] if res else 1
@@ -85,10 +88,10 @@ class Database:
 class Auth:
     @staticmethod
     def login(db: Database, username: str, password: str):
-        # Paso la contraseña a bytes
+        # bcrypt necesita que la password esté en bytes
         password_bytes = password.encode('utf-8')
         
-        # Busco si existe el usuario
+        # Busco si el usuario existe en la base de datos
         resultado = db.query(
             sql = "SELECT * FROM USERS WHERE username = :username",
             parameters = {"username": username}
@@ -98,12 +101,12 @@ class Auth:
             print("(!) Usuario no encontrado")
             return None 
         
-        # Obtengo el hash de la BD (columna 2)
+        # Saco el hash que estaba guardado (está en la columna 2)
         hashed_password = resultado[0][2].encode('utf-8')
         
-        # Comparo
+        # Comparo la clave ingresada con el hash guardado
         if bcrypt.checkpw(password_bytes, hashed_password):
-            return username 
+            return username # Devuelvo el usuario para usarlo en el menú
         else:
             print("(!) Contraseña incorrecta")
             return None
@@ -113,49 +116,51 @@ class Auth:
         print(">> Registrando usuario...")
         password = password.encode('utf-8')
         
-        # Aplico hash + salt por seguridad
+        # Generamos el hash con salt para que sea seguro
         salt = bcrypt.gensalt(12)
         hash_password = bcrypt.hashpw(password, salt)
 
-        # Calculo ID
+        # Obtengo el siguiente ID disponible
         next_id = db.get_next_id("USERS")
 
         usuario = {
             "id": next_id,
             "username": username,
-            "password": hash_password.decode('utf-8') 
+            "password": hash_password.decode('utf-8') # Lo paso a string para que Oracle no reclame
         }
 
-        # Guardo y verifico si funcionó
+        # Guardo en la base de datos
         exito = db.query(
             "INSERT INTO USERS (id, username, password) VALUES (:id, :username, :password)",
             parameters=usuario
         )
         
+        # Verifico si realmente se guardó
         if exito:
             print(f">> Usuario {username} registrado con éxito.")
         else:
-            print("(!) Error: No se pudo registrar el usuario en la Base de Datos.")
+            print("(!) Error: No se pudo registrar en la Base de Datos.")
 
 class Finance:
     def __init__(self, db: Database, usuario_actual: str, base_url: str = "https://mindicador.cl/api"):
         self.base_url = base_url   
         self.db = db
-        self.usuario_actual = usuario_actual # Guardo quién está usando el sistema
+        self.usuario_actual = usuario_actual # Guardo el usuario logueado para el historial
 
     def get_indicator(self, indicator: str, fecha: str = None):
         try:
-            # Armo la URL según si es hoy o fecha pasada
+            # Armo la URL dependiendo si piden el valor de hoy o una fecha pasada
             url = f"{self.base_url}/{indicator}"
             if fecha:
                 url = f"{url}/{fecha}"
             
+            # Consumo la API
             respuesta = requests.get(url).json()
             
             valor = 0
             fecha_valor = ""
             
-            # Proceso la respuesta JSON de la API
+            # La API entrega los datos distinto si es por fecha o actual, aquí lo filtro
             if fecha: 
                 if len(respuesta['serie']) > 0:
                     valor = respuesta['serie'][0]['valor']
@@ -165,13 +170,23 @@ class Finance:
                     valor = respuesta['serie'][0]['valor']
                     fecha_valor = respuesta['serie'][0]['fecha'][:10]
 
-            # Si tengo un valor válido, lo guardo en Oracle (Requisito obligatorio)
+            # Requisito: Si tengo un valor, debo guardarlo en la BD
             if valor > 0:
-                next_id = self.db.get_next_id("HISTORIAL")
-                sql = "INSERT INTO HISTORIAL (id, indicador, valor, fecha_dato, usuario) VALUES (:id, :ind, :val, :fec, :usu)"
+                next_id = self.db.get_next_id("HISTORIAL_FINANCIERO")
+                
+                # Aquí cumplo con registrar el "sitio que provee los indicadores"
+                sql = """
+                    INSERT INTO HISTORIAL_FINANCIERO 
+                    (id, indicador, valor, fecha_dato, usuario, origen) 
+                    VALUES (:id, :ind, :val, :fec, :usu, :ori)
+                """
                 params = {
-                    "id": next_id, "ind": indicator, "val": valor, 
-                    "fec": fecha_valor, "usu": self.usuario_actual
+                    "id": next_id, 
+                    "ind": indicator, 
+                    "val": valor, 
+                    "fec": fecha_valor, 
+                    "usu": self.usuario_actual,
+                    "ori": "mindicador.cl" # Dejo fijo el origen de los datos
                 }
                 self.db.query(sql, params)
                 return valor
@@ -181,6 +196,7 @@ class Finance:
             return 0
 
     def get_rango(self, indicator, anio):
+        # Esta función es para consultar todo un año (Periodo)
         try:
             url = f"{self.base_url}/{indicator}/{anio}"
             print(f"Consultando año {anio}...")
@@ -190,30 +206,32 @@ class Finance:
                 print(f"{'FECHA':<12} | {'VALOR':<10}")
                 print("-" * 25)
                 for item in respuesta['serie']:
+                    # Muestro solo los primeros 10 caracteres de la fecha
                     print(f"{item['fecha'][:10]:<12} | ${item['valor']}")
         except:
             print("Error consultando rango")
 
     def ver_historial_usuario(self):
-        # Muestro el historial filtrado por el usuario actual
+        # Muestro el historial filtrando por el usuario que está conectado
         print(f"\n======== HISTORIAL DE: {self.usuario_actual} ========")
-        sql = "SELECT indicador, valor, fecha_dato, fecha_consulta FROM HISTORIAL WHERE usuario = :u ORDER BY id DESC"
+        sql = "SELECT indicador, valor, fecha_dato, fecha_consulta, origen FROM HISTORIAL_FINANCIERO WHERE usuario = :u ORDER BY id DESC"
         datos = self.db.query(sql, {"u": self.usuario_actual})
         
         if datos and len(datos) > 0:
-            print(f"{'INDICADOR':<10} | {'VALOR':<10} | {'FECHA DATO':<12} | {'FECHA CONSULTA'}")
-            print("-" * 65)
+            print(f"{'INDICADOR':<10} | {'VALOR':<10} | {'FECHA DATO':<12} | {'ORIGEN':<15} | {'FECHA CONSULTA'}")
+            print("-" * 80)
             for fila in datos:
                 ind = fila[0].upper()
                 val = fila[1]
                 f_dato = fila[2]
                 f_cons = fila[3].strftime("%Y-%m-%d %H:%M") 
-                print(f"{ind:<10} | ${val:<9} | {f_dato:<12} | {f_cons}")
+                origen = fila[4]
+                print(f"{ind:<10} | ${val:<9} | {f_dato:<12} | {origen:<15} | {f_cons}")
         else:
             print(">> No tienes consultas guardadas en el historial.")
 
 
-    # Métodos "wrapper" para cada indicador
+    # Métodos simples para llamar a cada indicador
     def get_uf(self, fecha: str = None):
         valor = self.get_indicator("uf", fecha)
         print(f"Valor Unidad de Fomento (UF): ${valor}")
@@ -235,13 +253,13 @@ class Finance:
     
        
 if __name__ == "__main__":
-    # Inicio la conexión
+    # Inicio la conexión a la base de datos
     db = Database(
         username=os.getenv("ORACLE_USER"),
         dsn=os.getenv("ORACLE_DSN"),
         password=os.getenv("ORACLE_PASSWORD")
     )
-    # Intento crear tablas (si fallan, saldrá el error en consola)
+    # Creo las tablas al inicio. Si fallan, la función query avisará.
     db.create_all_tables()
 
     # --- MENU DE LOGIN ---
@@ -268,6 +286,7 @@ if __name__ == "__main__":
     indicadores = Finance(db, usuario_logueado)
     
     while True:
+        # Menú visual solicitado
         print("\n")
         print("            █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█")
         print("            █             MENU FINANCIERO           █")
@@ -294,7 +313,7 @@ if __name__ == "__main__":
         if sel == "1":
             print("\n   --- SELECCIÓN DE INDICADOR ---")
             print("   UF | Dolar | Euro | UTM | IPC | IVP")
-            # Con .lower() el usuario puede escribir UF o uf y funciona igual
+            # Uso .lower() para aceptar mayúsculas y minúsculas sin problema
             tipo = input("   >> Escriba el nombre: ").lower()
             fecha = input("   >> Fecha (dd-mm-yyyy) o ENTER para hoy: ")
             if fecha == "": fecha = None
