@@ -198,9 +198,9 @@ def menu_indicadores(finance_app):
 
 if __name__ == "__main__":
     # Instanciamos la clase de finanzas
-    app = Finance() 
+    indicadores = Finance() 
     # Llamamos al menú de manera directa
-    menu_indicadores(app)
+    menu_indicadores(indicadores)
 
 """
 # Conectarnos a la base de datos
