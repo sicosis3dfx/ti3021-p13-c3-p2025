@@ -6,23 +6,19 @@ from dotenv import load_dotenv
 from typing import Optional
 import datetime
 
-# Cargo las credenciales del archivo .env para que no se vean en el código
+# Cargo las credenciales del archivo .env
 load_dotenv()
 
 class Database:
     def __init__(self, username, dsn, password):
-        # Constructor: Aquí recibo los datos para conectarme a Oracle
         self.username = username
         self.dsn = dsn
         self.password = password
 
     def get_connection(self):
-        # Esta función es la que hace la conexión real usando la librería oracledb
         return oracledb.connect(user=self.username, password=self.password, dsn=self.dsn)  
 
     def create_all_tables(self):
-        # Aquí defino las tablas que pide la evaluación.
-        # Le puse HISTORIAL_FINANCIERO para que se cree limpia con todas las columnas nuevas.
         tables = [
             (
                 "CREATE TABLE USERS ("
@@ -45,25 +41,20 @@ class Database:
                 ")"
             )
         ]
-        # Recorro la lista y mando a crear cada tabla una por una
+
         for table in tables:
             self.query(table)
 
     def query(self, sql: str, parameters: Optional[dict] = None):
             try:
-                # Uso 'with' para que la conexión se cierre sola si pasa algo
                 with self.get_connection() as connection:
                     with connection.cursor() as cursor:
                         ejecucion = cursor.execute(sql, parameters)
-                        
-                        # Si la consulta empieza con SELECT, tengo que devolver una lista con los datos
                         if sql.strip().upper().startswith("SELECT"):
                             resultado = []
                             for fila in ejecucion:
                                 resultado.append(fila)
                             return resultado 
-                        
-                        # Si es un INSERT o CREATE, guardo los cambios con commit
                         connection.commit()
                         return True 
             except oracledb.DatabaseError as error:
@@ -71,7 +62,6 @@ class Database:
                 # Lo filtro para que no me llene la consola de errores rojos al iniciar.
                 if "ORA-00955" in str(error):
                     return False 
-                
                 # Si es otro error (como credenciales o permisos), que me avise
                 print(f"Error BD: {error}")
                 return False
@@ -196,7 +186,7 @@ class Finance:
             return 0
 
     def get_rango(self, indicator, anio):
-        # Esta función es para consultar todo un año (Periodo)
+        # Esta función es para consultar todo un año o período completo
         try:
             url = f"{self.base_url}/{indicator}/{anio}"
             print(f"Consultando año {anio}...")
