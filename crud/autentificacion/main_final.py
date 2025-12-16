@@ -203,7 +203,7 @@ class Finance:
 
     def ver_historial_usuario(self):
         # Muestro el historial filtrando por el usuario que está conectado
-        print(f"\n======== HISTORIAL DE: {self.usuario_actual} ========")
+        print(f"\n========     HISTORIAL DE BÚSQUEDA DEL USUARIO: {self.usuario_actual}     ========")
         sql = "SELECT indicador, valor, fecha_dato, fecha_consulta, origen FROM HISTORIAL_FINANCIERO WHERE usuario = :u ORDER BY id DESC"
         datos = self.db.query(sql, {"u": self.usuario_actual})
         
