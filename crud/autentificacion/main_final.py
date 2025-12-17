@@ -1,3 +1,4 @@
+#Repositorio:  https://github.com/sicosis3dfx/ti3021-p13-c3-p2025/blob/main/crud/autentificacion/main_final.py
 import bcrypt
 import requests
 import oracledb
