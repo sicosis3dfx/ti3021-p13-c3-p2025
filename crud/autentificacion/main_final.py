@@ -69,9 +69,10 @@ class Database:
  
     def get_next_id(self, table_name):
         # Tuve problemas con el autoincrementable (error ORA-01400), así que hice esta función
-        # para buscar el último ID y sumarle 1 manualmente.
+        # para buscar el último ID más alto y sumarle 1 manualmente.
+        # La función NVL asegura que si es el primer registro, empiece desde el 1 en vez de dar error por valor nulo."
         try:
-            res = self.query(f"SELECT NVL(MAX(id), 0) + 1 FROM {table_name}")
+            res = self.query(f"SELECT NVL(MAX(id), 0) + 1 FROM {table_name}") 
             return res[0][0] if res else 1
         except:
             return 1
