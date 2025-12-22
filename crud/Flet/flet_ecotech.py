@@ -84,9 +84,60 @@ class App:
     
     def page_login(self):
         self.page.controls.clear()
-        # CODIGO DE LOGIN DE USUARIOS
+        
+        self.imput_username= ft.TextField(
+            label="Ingrese su Nombre de Usuario",
+            hint_text="Ingresa tu nombre de usuario"
+        )
+        self.imput_password= ft.TextField(
+            label="Ingrese su Contraseña",
+            hint_text="Ingresa tu contraseña",
+            password=True,
+            can_reveal_password=True
+        )
+        self.button_login= ft.Button(
+            text="Iniciar Sesión",
+            on_click=self.handle_login
+        )
+        self.text_status= ft.Text(
+            value=""
+        )
+
+        self.text_register= ft.Text(
+            value="¿No tienes una cuenta? Regístrate aquí."
+        )
+
+        self.button_register= ft.TextButton(
+            text="Registrarse",
+            on_click=lambda e: self.page_register()
+        )
+
+        self.page.add(
+            self.imput_username,
+            self.imput_password,
+            self.button_login,
+            self.text_status,
+            self.text_register,
+            self.button_register
+        )
+        
         self.page.update()
     
+    def handle_login(self, e):
+        username = (self.imput_username.value or "").strip()
+        password = (self.imput_password.value or "").strip()
+
+        status = Auth.login(
+            db=self.db,
+            username=username,
+            password=password
+        )
+        self.text_status.value = status['message']
+        self.page.update()
+        
+        if status['success']:
+            self.page_main_menu()
+        
     def page_main_menu(self):
         self.page.controls.clear()
         # CODIGO DEL MENU PRINCIPAL
