@@ -44,7 +44,7 @@ class Database:
                         return resultado
                 conn.commit()
         except oracledb.DatabaseError as error:
-            return error
+            raise error
 
 
 class Auth:
