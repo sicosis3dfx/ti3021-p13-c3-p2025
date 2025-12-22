@@ -1,4 +1,4 @@
-from ecotech import Auth, Database, Finance
+from ecotech_final import Auth, Database, Finance
 from dotenv import load_dotenv
 import flet as ft
 import os
