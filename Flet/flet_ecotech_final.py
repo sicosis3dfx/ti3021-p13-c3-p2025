@@ -1,9 +1,3 @@
-# ==============================================================================
-# Archivo: flet_ecotech_final.py
-# Alumno: Angelo
-# Versión: V22 (Refactorización a POO - Estructura Docente)
-# ==============================================================================
-
 import flet as ft
 from ecotech_final import Database, Auth, Finance
 import datetime
@@ -11,25 +5,28 @@ import time
 
 class EcoTechApp:
     def __init__(self, page: ft.Page):
+        # Constructor principal de la aplicación
         self.page = page
         self.configurar_pagina()
         
-        # --- Estado de la Aplicación (Variables Globales de la Clase) ---
+        # Variables de estado para manejar la sesión
         self.usuario_sesion = None
         self.db = None
         
-        # --- Inicializar BD ---
+        # Intentamos conectar a la BD al iniciar la app
         try:
             self.db = Database()
             self.db.create_all_tables()
         except Exception as e:
-            self.page.add(ft.Text(f"Error crítico BD: {e}", color="red"))
+            # Si falla la conexión, mostramos el error en pantalla
+            self.page.add(ft.Text(f"Error crítico conectando a BD: {e}", color="red"))
             return
 
-        # --- Iniciar App ---
+        # Si todo va bien, lanzamos la pantalla de bienvenida
         self.ir_a_bienvenida()
 
     def configurar_pagina(self):
+        # Configuración visual básica de la ventana
         self.page.title = "EcoTech Finanzas"
         self.page.window_width = 450
         self.page.window_height = 800
@@ -37,7 +34,7 @@ class EcoTechApp:
         self.page.horizontal_alignment = "center"
         self.page.padding = 0
         
-        # Constantes de diseño
+        # Definimos una paleta de colores y gradientes para reutilizar
         self.COLOR_TEAL = "teal"
         self.COLOR_VERDE = "green"
         self.gradient_fondo = ft.LinearGradient(
@@ -47,12 +44,14 @@ class EcoTechApp:
         )
 
     # ==========================================================================
-    # PANTALLAS (VISTAS)
+    # GESTIÓN DE PANTALLAS (VISTAS)
     # ==========================================================================
 
     def ir_a_bienvenida(self):
+        # Limpiamos la pantalla anterior
         self.page.clean()
         
+        # Creamos el contenido de la portada
         contenido = ft.Container(
             content=ft.Column([
                 ft.Icon(ft.Icons.ECO, size=100, color="white"),
@@ -72,11 +71,12 @@ class EcoTechApp:
     def ir_a_login(self):
         self.page.clean()
         
-        # Controles locales
+        # Campos de texto para el login
         self.txt_user = ft.TextField(label="Usuario", prefix_icon=ft.Icons.PERSON, width=280, border_radius=10, bgcolor="white")
         self.txt_pass = ft.TextField(label="Contraseña", prefix_icon=ft.Icons.LOCK, password=True, can_reveal_password=True, width=280, border_radius=10, bgcolor="white")
         self.lbl_mensaje = ft.Text(color="red", weight="bold")
 
+        # Tarjeta contenedora del formulario
         tarjeta = ft.Container(
             bgcolor="white", padding=30, border_radius=20,
             shadow=ft.BoxShadow(blur_radius=15, color=ft.Colors.BLACK45),
@@ -96,6 +96,7 @@ class EcoTechApp:
     def ir_a_registro(self):
         self.page.clean()
         
+        # Reutilizamos estructura similar al login pero para registro
         self.txt_user = ft.TextField(label="Usuario", prefix_icon=ft.Icons.PERSON, width=280, border_radius=10, bgcolor="white")
         self.txt_pass = ft.TextField(label="Contraseña", prefix_icon=ft.Icons.LOCK, password=True, can_reveal_password=True, width=280, border_radius=10, bgcolor="white")
         self.lbl_mensaje = ft.Text(color="red", weight="bold")
@@ -119,10 +120,10 @@ class EcoTechApp:
     def ir_a_dashboard(self):
         self.page.clean()
         
-        # Inicializamos objeto finanzas
+        # Instanciamos la clase Finance con el usuario ya logueado
         self.finanzas = Finance(self.db, self.usuario_sesion)
         
-        # Elementos UI
+        # Preparación de la UI del dashboard
         self.lbl_resultado_api = ft.Text("Selecciona un indicador", size=22, weight="bold", color=self.COLOR_TEAL)
         self.tabla_dashboard = ft.DataTable(
             columns=[
@@ -135,10 +136,10 @@ class EcoTechApp:
             rows=[]
         )
         
-        # Cargar datos iniciales
+        # Cargamos el historial inicial al abrir la vista
         self.actualizar_tabla_dashboard()
 
-        # Botones de indicadores
+        # Función auxiliar para crear botones rápido
         def btn(t, d):
             return ft.ElevatedButton(t, data=d, on_click=self.consultar_indicador, bgcolor=ft.Colors.TEAL_50, color=self.COLOR_TEAL)
 
@@ -158,6 +159,7 @@ class EcoTechApp:
             ])
         )
 
+        # Botones de navegación a otras vistas
         btn_analisis = ft.ElevatedButton(
             "Análisis Anual", icon=ft.Icons.CALENDAR_MONTH, 
             bgcolor=ft.Colors.ORANGE_50, color=ft.Colors.ORANGE_900, width=145,
@@ -191,6 +193,7 @@ class EcoTechApp:
     def ir_a_reportes(self):
         self.page.clean()
         
+        # Vista de historial completo
         header = ft.Container(
             bgcolor=self.COLOR_TEAL, padding=15, 
             content=ft.Row([
@@ -202,11 +205,13 @@ class EcoTechApp:
         col_reporte = ft.Column(scroll="auto", expand=True, horizontal_alignment="center")
         datos = Finance(self.db, self.usuario_sesion).get_history()
         
+        # Renderizamos cada item del historial
         for fila in datos:
             valor = fila[1]
             origen = fila[4]
             fecha_hora = fila[3].strftime("%d-%m-%Y %H:%M")
             
+            # Diferenciamos visualmente si es consulta normal o anual
             if valor == 0:
                 titulo = f"{fila[0].upper()} - RESUMEN ANUAL"
                 subtitulo = f"Fuente: {origen}\nConsultado: {fecha_hora}"
@@ -245,6 +250,7 @@ class EcoTechApp:
         self.txt_fecha = ft.TextField(label="Fecha (DD-MM-YYYY)", value=fecha_hoy_str, width=250)
         self.lbl_res_fecha = ft.Text("", size=20, weight="bold", color="blue")
 
+        # Lógica para sugerir fechas en IPC/UTM que son mensuales
         def cambio_indicador(e):
             if self.dd_ind.value in ["ipc", "utm"]:
                 mes_ant = hoy.month - 1
@@ -323,12 +329,13 @@ class EcoTechApp:
             lbl_st.value = "Consultando..."
             self.page.update()
             
+            # Llamamos a la lógica de negocio
             datos = Finance(self.db, self.usuario_sesion).get_yearly_data(dd_ind.value, txt_y.value)
             
             if not datos:
                 lbl_st.value = "Sin datos."
             else:
-                lbl_st.value = f"{len(datos)} registros."
+                lbl_st.value = f"{len(datos)} registros encontrados."
                 lbl_st.color = "green"
                 for i in datos:
                     col_res.controls.append(ft.Container(
@@ -349,14 +356,14 @@ class EcoTechApp:
         ], expand=True, horizontal_alignment="center"))
 
     # ==========================================================================
-    # LÓGICA DE NEGOCIO (Manejadores de Eventos)
+    # LÓGICA DE NEGOCIO Y EVENTOS
     # ==========================================================================
 
     def procesar_login(self, e):
         user = self.txt_user.value
         pwd = self.txt_pass.value
         if not user or not pwd:
-            self.lbl_mensaje.value = "Ingresa tus credenciales"
+            self.lbl_mensaje.value = "Ingresa tus credenciales por favor"
             self.lbl_mensaje.color = "red"
             self.page.update()
             return
@@ -367,7 +374,7 @@ class EcoTechApp:
             self.lbl_mensaje.value = f"Bienvenido {user}"
             self.lbl_mensaje.color = "green"
             self.page.update()
-            time.sleep(1.5) 
+            time.sleep(1.5) # Pequeña pausa para feedback visual
             self.usuario_sesion = user
             self.ir_a_dashboard()
         else:
@@ -379,7 +386,7 @@ class EcoTechApp:
         user = self.txt_user.value
         pwd = self.txt_pass.value
         if not user or not pwd:
-            self.lbl_mensaje.value = "Faltan datos"
+            self.lbl_mensaje.value = "Falta rellenar campos"
             self.lbl_mensaje.color = "red"
             self.page.update()
             return
@@ -387,7 +394,7 @@ class EcoTechApp:
         resp = Auth.register(self.db, user, pwd)
         
         if resp["success"]:
-            self.lbl_mensaje.value = "Registrado de manera exitosa"
+            self.lbl_mensaje.value = "Registro completado. Ahora inicia sesión."
             self.lbl_mensaje.color = "green"
             self.page.update()
             time.sleep(1.5)
@@ -398,16 +405,18 @@ class EcoTechApp:
             self.page.update()
 
     def consultar_indicador(self, e):
+        # Evento al clickear un botón de indicador rápido
         ind = e.control.data 
         valor = self.finanzas.get_indicator(ind)
         if valor != -1:
             self.lbl_resultado_api.value = f"{ind.upper()}: ${valor}"
             self.actualizar_tabla_dashboard()
         else:
-            self.lbl_resultado_api.value = "Datos no disponibles"
+            self.lbl_resultado_api.value = "Datos no disponibles hoy"
         self.page.update()
 
     def actualizar_tabla_dashboard(self):
+        # Refrescamos la tabla con los últimos movimientos guardados en BD
         datos = self.finanzas.get_history()
         self.tabla_dashboard.rows.clear()
         if datos:
@@ -416,6 +425,7 @@ class EcoTechApp:
                 valor = fila[1]
                 origen = fila[4]
                 
+                # Ajuste visual para cuando guardamos consultas anuales (valor 0)
                 if valor == 0:
                     texto_valor = "ANUAL"
                     color_valor = "orange"
@@ -423,6 +433,7 @@ class EcoTechApp:
                     texto_valor = f"${valor}"
                     color_valor = "black"
 
+                # Limpiamos un poco la URL para que quepa en la tabla
                 origen_corto = origen.replace("https://mindicador.cl/api", "API").replace("https://", "")
                 
                 self.tabla_dashboard.rows.append(ft.DataRow(cells=[
@@ -432,6 +443,6 @@ class EcoTechApp:
                 ]))
         self.page.update()
 
-# --- ARRANQUE DE LA CLASE ---
+# --- Punto de entrada de la aplicación ---
 if __name__ == "__main__":
     ft.app(target=EcoTechApp)
