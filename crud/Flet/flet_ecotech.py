@@ -140,7 +140,7 @@ class App:
         
     def page_main_menu(self):
         self.page.controls.clear()
-        # CODIGO DEL MENU PRINCIPAL
+        
         self.page.update()
 
     def page_indicator_menu(self):
@@ -156,3 +156,5 @@ class App:
 if __name__ == "__main__":
     load_dotenv()
     ft.app(target=App)
+
+#usar datatape para insertar tabla con datos.
