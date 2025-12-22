@@ -136,11 +136,37 @@ class App:
         self.page.update()
         
         if status['success']:
+            self.loged_user = username
             self.page_main_menu()
         
     def page_main_menu(self):
         self.page.controls.clear()
         
+        self.text_title_main_menu = ft.Text(
+            value="Menú Principal",
+            color="#cc0000",
+            size=32,
+            weight=ft.FontWeight("bold")
+        )
+        self.button_indicators = ft.Button(
+            text="Consultar Indicadores Financieros",
+            on_click=lambda e: self.page_indicator_menu()
+        )
+        self.button_history = ft.Button(
+            text="Ver Historial de Consultas",
+            on_click=lambda e: self.page_history_menu()
+        )
+        self.button_logout = ft.Button(
+            text="Cerrar Sesión",
+            on_click=lambda e: self.page_login()
+        )
+        self.page.add(
+            self.text_title_main_menu,
+            self.button_indicators,
+            self.button_history,
+            self.button_logout
+        )
+
         self.page.update()
 
     def page_indicator_menu(self):
