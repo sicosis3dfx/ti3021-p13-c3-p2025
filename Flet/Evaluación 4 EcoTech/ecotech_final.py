@@ -25,8 +25,21 @@ class Database:
     def create_all_tables(self):
         # Definimos las tablas necesarias para el sistema
         tables = [
-            ("CREATE TABLE USERS(id INTEGER PRIMARY KEY, username VARCHAR(32) UNIQUE, password VARCHAR(128))"),
-            ("CREATE TABLE HISTORIAL_FINANCIERO (id INTEGER PRIMARY KEY, indicador VARCHAR2(20), valor NUMBER(10, 2), fecha_dato VARCHAR2(20), fecha_consulta DATE DEFAULT SYSDATE, usuario VARCHAR2(32), origen VARCHAR2(100))")
+            (
+            "CREATE TABLE USERS(id INTEGER PRIMARY KEY, "
+            "username VARCHAR(32) UNIQUE, "
+            "password VARCHAR(128))"
+            ),
+            
+            (
+            "CREATE TABLE HISTORIAL_FINANCIERO (id INTEGER PRIMARY KEY, "
+            "indicador VARCHAR2(20), "
+            "valor NUMBER(10, 2), "
+            "fecha_dato VARCHAR2(20), "
+            "fecha_consulta DATE DEFAULT SYSDATE, "
+            "usuario VARCHAR2(32), "
+            "origen VARCHAR2(100))"
+            )
         ]
         # Iteramos y ejecutamos la creación
         for table in tables:
