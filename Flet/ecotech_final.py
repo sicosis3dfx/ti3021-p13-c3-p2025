@@ -1,3 +1,5 @@
+# Proyecto: EcoTech Solutions - Backend y Lógica
+# Módulo principal con clases para BD, Autenticación y Finanzas
 import bcrypt
 import requests
 import oracledb

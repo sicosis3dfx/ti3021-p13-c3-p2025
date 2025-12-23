@@ -1,3 +1,5 @@
+# EcoTech Solutions - Interfaz Gráfica (Flet)
+# Integración con backend y lógica de negocio
 import flet as ft
 from ecotech_final import Database, Auth, Finance
 import datetime
@@ -43,9 +45,9 @@ class EcoTechApp:
             colors=["#004d40", "#66bb6a"], 
         )
 
-    # ==========================================================================
+    # --------------------------------------------------------------------------
     # GESTIÓN DE PANTALLAS (VISTAS)
-    # ==========================================================================
+    # --------------------------------------------------------------------------
 
     def ir_a_bienvenida(self):
         # Limpiamos la pantalla anterior
@@ -355,9 +357,9 @@ class EcoTechApp:
             lbl_st, ft.Divider(), col_res
         ], expand=True, horizontal_alignment="center"))
 
-    # ==========================================================================
+    # --------------------------------------------------------------------------
     # LÓGICA DE NEGOCIO Y EVENTOS
-    # ==========================================================================
+    # --------------------------------------------------------------------------
 
     def procesar_login(self, e):
         user = self.txt_user.value
